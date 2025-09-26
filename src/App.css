@@ -1,0 +1,610 @@
+/* ===========================================
+   RESET E CONFIGURAÇÃO BASE
+   =========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: monospace;
+}
+
+/* ===========================================
+   CONTAINER PRINCIPAL
+   =========================================== */
+.game-container {
+  min-height: 100vh;
+  background: radial-gradient(circle, #4a90e2, #1e3c72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ===========================================
+   POKÉBALL
+   =========================================== */
+.pokeball {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4),
+    inset 0 5px 15px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+/* Metade superior - vermelha */
+.pokeball-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #e55353, #cc4444);
+  border-radius: 160px 160px 0 0;
+}
+
+/* Reflexo na parte vermelha */
+.pokeball-reflection {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  width: 80px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), transparent);
+  border-radius: 40px;
+  transform: rotate(-20deg);
+}
+
+/* Metade inferior - branca */
+.pokeball-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef, #dee2e6);
+  border-radius: 0 0 160px 160px;
+}
+
+/* Linha central preta */
+.pokeball-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #2c3e50, #34495e, #2c3e50);
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Botão central da pokéball */
+.pokeball-center-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(145deg, #ecf0f1, #bdc3c7);
+  border-radius: 50%;
+  border: 3px solid #2c3e50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+
+/* ===========================================
+   TELA LCD
+   =========================================== */
+.lcd-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  border-radius: 8px;
+  border: 4px solid #1a252f;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-content {
+  width: 100%;
+  height: 100%;
+  background: #2d4a22;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #7bed9f;
+  font-size: 9px;
+  font-weight: bold;
+  position: relative;
+}
+
+/* ===========================================
+   SPRITE DO POKÉMON
+   =========================================== */
+.pet-sprite {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pikachuBounce 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+.pokemon-image {
+  width: 110px;
+  height: 110px;
+  image-rendering: pixelated;
+  filter: brightness(0.7) sepia(1) hue-rotate(60deg) contrast(1.1);
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+/* Efeito especial quando shiny */
+.pokemon-image[src*='shiny'] {
+  filter: brightness(0.9) sepia(1) hue-rotate(45deg) contrast(1.3) saturate(1.5);
+  animation: sparkle 1s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+/* ===========================================
+   TEXTOS (NOME E MENSAGEM)
+   =========================================== */
+.pet-name {
+  text-align: center;
+  font-size: 8px;
+  margin-bottom: 5px;
+  background: rgba(45, 74, 34, 0.8);
+  padding: 2px 4px;
+  border-radius: 3px;
+  /* z-index: 3; */
+  position: relative;
+}
+
+.pet-message {
+  text-align: center;
+  font-size: 8px;
+  min-height: 10px;
+  background: rgba(45, 74, 34, 0.9);
+  padding: 3px 6px;
+  border-radius: 4px;
+  z-index: 3;
+  position: relative;
+  border: 1px solid rgba(123, 237, 159, 0.5);
+  box-shadow: 0 0 8px rgba(123, 237, 159, 0.3);
+}
+
+/* ===========================================
+   BARRAS DE STATUS
+   =========================================== */
+.status-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+  position: relative;
+  background: rgba(45, 74, 34, 0.7);
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(123, 237, 159, 0.3);
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.status-bar span {
+  font-size: 6px;
+  width: 15px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(30, 58, 26, 0.8);
+  border: 1px solid #7bed9f;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 0 3px currentColor;
+}
+
+/* ===========================================
+   MENU
+   =========================================== */
+.menu-header {
+  text-align: center;
+  font-size: 8px;
+  margin-bottom: 10px;
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.carousel-prev,
+.carousel-next {
+  font-size: 16px;
+  opacity: 0.4;
+  transform: scale(0.7);
+}
+
+.carousel-current {
+  text-align: center;
+}
+
+.action-icon {
+  font-size: 24px;
+  margin-bottom: 3px;
+}
+
+.action-desc {
+  font-size: 7px;
+}
+
+.menu-controls {
+  text-align: center;
+  font-size: 6px;
+  opacity: 0.8;
+}
+
+/* ===========================================
+   BALÕEZINHOS DE EMOTE - VERSÃO PNG
+   =========================================== */
+/* Balão no canto superior direito do LCD */
+.emote-bubble {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #2d4a22;
+  border: 3px solid #2c3e50;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: bubbleAppearRight 0.4s ease-out;
+  z-index: 10;
+}
+
+/* Rabinho apontando pro Pokémon */
+.emote-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; /* Embaixo do balão */
+  left: 8px; /* Canto esquerdo */
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #2d4a22; /* Aponta pra baixo */
+}
+
+.emote-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  left: 6px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid #2c3e50; /* Contorno preto */
+  z-index: -1;
+}
+
+/* Animação corrigida - sem conflito de posição */
+@keyframes bubbleAppearRight {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(-10px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Imagem do emote PNG 64x64 */
+.emote-image {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  transition: transform 0.2s ease;
+  display: block;
+
+  /* Inverte e deixa verde */
+  filter: invert(1) brightness(0.9) sepia(1) hue-rotate(60deg) saturate(1.5);
+}
+
+/* Animações específicas baseadas no nome do arquivo */
+.emote-bubble img[src*='excited'] {
+  animation: emoteExcited 0.3s ease-in-out infinite;
+}
+
+.emote-bubble img[src*='sleeping'] {
+  animation: emoteSleep 2s ease-in-out infinite;
+}
+
+.emote-bubble img[src*='happy'] {
+  animation: emoteHappy 1.5s ease-in-out infinite;
+}
+
+.emote-bubble img[src*='sick'] {
+  animation: emoteSick 0.5s ease-in-out infinite;
+}
+
+.emote-bubble img[src*='tired'] {
+  opacity: 0.9;
+  animation: emoteTired 3s ease-in-out infinite;
+}
+
+.emote-bubble img[src*='sad'] {
+  animation: emoteSad 2s ease-in-out infinite;
+}
+
+/* Animações dos emotes */
+@keyframes emoteHappy {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes emoteExcited {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+@keyframes emoteSleep {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes emoteSick {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes emoteTired {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(1px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes emoteSad {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+/* Animação do balõezinho aparecer */
+@keyframes bubbleAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateX(20px);
+  }
+  60% {
+    transform: scale(1.1) translateX(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* ===========================================
+   BOTÕES
+   =========================================== */
+.button-container {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 3;
+}
+
+.btn {
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-left,
+.btn-right {
+  width: 40px;
+  height: 25px;
+  background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+  border: 2px solid #2c3e50;
+  border-radius: 20px;
+  color: #2c3e50;
+  font-size: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.btn-center {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(145deg, #3498db, #2980b9);
+  border: 3px solid #2c3e50;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+/* Efeito de clique nos botões */
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.btn-center:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+/* ===========================================
+   ANIMAÇÕES
+   =========================================== */
+/* Bounce do Pikachu */
+@keyframes pikachuBounce {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-3px) scale(1.02);
+  }
+}
+
+/* Brilho quando shiny */
+@keyframes sparkle {
+  0%,
+  100% {
+    filter: brightness(0.9) sepia(1) hue-rotate(45deg) contrast(1.3)
+      saturate(1.5);
+  }
+  50% {
+    filter: brightness(1.1) sepia(1) hue-rotate(35deg) contrast(1.5)
+      saturate(1.8);
+  }
+}
+
+/* Animação de entrada da mensagem */
+.fade-in {
+  animation: messageAppear 0.3s ease-out;
+}
+
+@keyframes messageAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Animação do balõezinho de emote */
+@keyframes bubbleAppear {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5) translateY(10px);
+  }
+  60% {
+    transform: translateX(-50%) scale(1.1) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(0);
+  }
+}
+
+/* Animações dos emotes */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes sleepBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes zzz {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
