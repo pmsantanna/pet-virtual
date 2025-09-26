@@ -608,3 +608,55 @@ body {
     opacity: 0.3;
   }
 }
+
+/* ===========================================
+   TELA DE SELEÇÃO DE POKÉMON
+   =========================================== */
+.selection-header {
+  text-align: center;
+  font-size: 8px;
+  font-weight: bold;
+  margin-bottom: 4px; /* Reduzido de 8px */
+}
+
+.pokemon-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* Importante para position absolute funcionar */
+  margin: -16px 0; /* Margem negativa para ganhar espaço */
+}
+
+.preview-sprite {
+  width: 120px; /* Aumentado de 80px */
+  height: 120px; /* Aumentado de 80px */
+  image-rendering: pixelated;
+  filter: brightness(0.7) sepia(1) hue-rotate(60deg) contrast(1.1);
+  animation: previewBounce 1.5s ease-in-out infinite;
+  position: relative;
+  z-index: 2; /* Fica por cima de tudo */
+}
+
+.selection-name {
+  text-align: center;
+  font-size: 10px;
+  font-weight: bold;
+  margin: 2px 0; /* Reduzido de 8px */
+}
+
+.selection-help {
+  text-align: center;
+  font-size: 6px;
+  opacity: 0.8;
+}
+
+@keyframes previewBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  } /* Bounce maior também */
+}
