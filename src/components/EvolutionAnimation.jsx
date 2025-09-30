@@ -10,14 +10,25 @@ function EvolutionAnimation({ currentPokemon, evolutionData, onComplete }) {
   const baseUrl =
     'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 
+  // Resetar a flag quando mudar o Pokémon
+  useEffect(() => {
+    completedRef.current = false;
+    setAnimationStage('starting');
+    setShowCurrent(true);
+    setFlashCount(0);
+    setBrightness(1);
+  }, [currentPokemon.id]);
+
   // Stage 1: Mensagem inicial
   useEffect(() => {
-    const startTimer = setTimeout(() => {
-      setAnimationStage('flashing');
-    }, 1000);
+    if (animationStage === 'starting') {
+      const startTimer = setTimeout(() => {
+        setAnimationStage('flashing');
+      }, 1000);
 
-    return () => clearTimeout(startTimer);
-  }, []);
+      return () => clearTimeout(startTimer);
+    }
+  }, [animationStage, currentPokemon.id]);
 
   // Stage 2: Flashing
   useEffect(() => {
@@ -34,7 +45,7 @@ function EvolutionAnimation({ currentPokemon, evolutionData, onComplete }) {
     }
   }, [animationStage, flashCount, showCurrent]);
 
-  // Stage 3: Transform para complete
+  // Stage 3: Transform
   useEffect(() => {
     if (animationStage === 'transforming') {
       const transformTimer = setTimeout(() => {
@@ -46,7 +57,7 @@ function EvolutionAnimation({ currentPokemon, evolutionData, onComplete }) {
     }
   }, [animationStage]);
 
-  // Stage 4: Complete - EXECUTA APENAS UMA VEZ
+  // Stage 4: Complete
   useEffect(() => {
     if (animationStage === 'complete' && !completedRef.current) {
       completedRef.current = true;

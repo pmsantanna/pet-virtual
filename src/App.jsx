@@ -301,20 +301,33 @@ function App() {
   const handleEvolutionComplete = () => {
     const evolution = evolutionMap[petId];
 
+    console.log('handleEvolutionComplete chamado');
+    console.log('petId atual:', petId);
+    console.log('evolution:', evolution);
+
     if (evolution) {
+      const newPetId = evolution.id;
+      const newPetName = evolution.name;
+
+      console.log('Evoluindo para:', newPetName, '(ID:', newPetId, ')');
+
       // Atualiza os dados do Pokémon
-      setPetId(evolution.id);
-      setPetName(evolution.name);
+      setPetId(newPetId);
+      setPetName(newPetName);
       setPetHealth(100);
       setPetHappiness(100);
       setPetEnergy(100);
       setPetHunger(100);
-      setCanEvolve(false);
 
-      // Desliga as telas de evolução
+      // IMPORTANTE: Limpa TODOS os estados de evolução
+      setCanEvolve(false);
       setShowEvolutionAnimation(false);
       setIsEvolving(false);
       setCurrentScreen('pet');
+
+      console.log('Estados limpos, voltando para tela pet');
+    } else {
+      console.log('ERRO: Sem evolução disponível para petId:', petId);
     }
   };
 
