@@ -140,7 +140,6 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: pikachuBounce 2s ease-in-out infinite;
   z-index: 1;
 }
 
@@ -151,6 +150,7 @@ body {
   filter: brightness(0.7) sepia(1) hue-rotate(60deg) contrast(1.1);
   transition: all 0.3s ease;
   opacity: 0.8;
+  animation: pikachuBounce 2s ease-in-out infinite;
 }
 
 /* Efeito especial quando shiny */
@@ -525,10 +525,10 @@ body {
 @keyframes pikachuBounce {
   0%,
   100% {
-    transform: translate(-50%, -50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) translateY(-3px) scale(1.02);
+    transform: translateY(-3px) scale(1.02);
   }
 }
 
@@ -659,4 +659,680 @@ body {
   50% {
     transform: translateY(-8px);
   } /* Bounce maior também */
+}
+
+/* ===========================================
+   BARRA DE EXPERIÊNCIA (LATERAL DIREITA)
+   =========================================== */
+.exp-bar-container {
+  position: absolute;
+  right: -45px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 6;
+}
+
+.exp-level {
+  background: #2c3e50;
+  border: 2px solid #7bed9f;
+  border-radius: 8px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.level-label {
+  font-size: 6px;
+  color: #7bed9f;
+  font-weight: bold;
+}
+
+.level-number {
+  font-size: 14px;
+  color: #7bed9f;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.exp-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.exp-bar {
+  width: 20px;
+  height: 100px;
+  background: rgba(30, 58, 26, 0.8);
+  border: 2px solid #7bed9f;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.exp-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, #7bed9f, #5dd48f);
+  border-radius: 8px;
+  transition: height 0.5s ease;
+  box-shadow: 0 0 8px rgba(123, 237, 159, 0.5);
+}
+
+.exp-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(45, 74, 34, 0.8);
+  border: 1px solid #7bed9f;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.exp-label {
+  font-size: 6px;
+  color: #7bed9f;
+  font-weight: bold;
+}
+
+.exp-value {
+  font-size: 7px;
+  color: #7bed9f;
+  white-space: nowrap;
+}
+
+/* Animação quando ganha EXP */
+@keyframes expGain {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(123, 237, 159, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(123, 237, 159, 1);
+  }
+}
+
+.exp-bar-fill.gaining {
+  animation: expGain 0.5s ease;
+}
+
+/* ===========================================
+   TELA DE EVOLUÇÃO
+   =========================================== */
+.evolution-header {
+  text-align: center;
+  font-size: 9px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ffd700;
+  animation: shineGold 1.5s ease-in-out infinite;
+}
+
+.evolution-sprites {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.evolution-sprite-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.evolution-sprite {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  filter: brightness(0.7) sepia(1) hue-rotate(60deg) contrast(1.1);
+  animation: evolutionPulse 1s ease-in-out infinite;
+}
+
+.evolution-sprite.evolution-new {
+  filter: brightness(0.9) sepia(1) hue-rotate(60deg) contrast(1.2) saturate(1.5);
+  animation: evolutionShine 1.5s ease-in-out infinite;
+}
+
+.evolution-arrow {
+  font-size: 20px;
+  color: #ffd700;
+  animation: arrowBounce 1s ease-in-out infinite;
+}
+
+.evolution-name-small {
+  font-size: 7px;
+  color: #7bed9f;
+  font-weight: bold;
+}
+
+.evolution-question {
+  text-align: center;
+  font-size: 9px;
+  font-weight: bold;
+  margin: 8px 0;
+  color: #ffd700;
+}
+
+.evolution-options {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.evolution-option {
+  font-size: 7px;
+  padding: 3px 8px;
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid #ffd700;
+  border-radius: 3px;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* Animações da evolução */
+@keyframes shineGold {
+  0%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+  }
+}
+
+@keyframes evolutionPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes evolutionShine {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(0.9) sepia(1) hue-rotate(60deg) contrast(1.2)
+      saturate(1.5);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.1) sepia(1) hue-rotate(50deg) contrast(1.4) saturate(2);
+  }
+}
+
+@keyframes arrowBounce {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+/* ===========================================
+   ANIMAÇÃO DE EVOLUÇÃO CLÁSSICA
+   =========================================== */
+.evolution-animation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #2d4a22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 100;
+}
+
+/* Background pulsante */
+.evolution-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, #3d5a32, #2d4a22);
+  animation: bgPulse 2s ease-in-out infinite;
+}
+
+.evolution-bg.transforming {
+  background: radial-gradient(circle, #ffffff, #7bed9f);
+  animation: whiteFlash 0.5s ease-out;
+}
+
+/* Círculos de energia */
+.energy-circle {
+  position: absolute;
+  border: 2px solid #7bed9f;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.circle-1 {
+  width: 80px;
+  height: 80px;
+  animation: expandCircle 2s ease-out infinite;
+}
+
+.circle-2 {
+  width: 100px;
+  height: 100px;
+  animation: expandCircle 2s ease-out infinite 0.3s;
+}
+
+.circle-3 {
+  width: 120px;
+  height: 120px;
+  animation: expandCircle 2s ease-out infinite 0.6s;
+}
+
+/* Sprite wrapper */
+.evolution-sprite-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sprite animado */
+.evolution-sprite-animated {
+  width: 100px;
+  height: 100px;
+  image-rendering: pixelated;
+  position: relative;
+  z-index: 10;
+}
+
+.evolution-sprite-animated.stage-starting {
+  animation: bounce 0.5s ease-in-out infinite;
+}
+
+.evolution-sprite-animated.stage-flashing {
+  animation: shake 0.1s ease-in-out infinite,
+    evolutionGlow 0.3s ease-in-out infinite;
+}
+
+.evolution-sprite-animated.stage-transforming {
+  animation: explode 0.5s ease-out;
+  transform: scale(2);
+}
+
+.evolution-sprite-animated.stage-complete {
+  animation: appear 1s ease-out, celebrateBounce 0.8s ease-in-out 1s 3;
+}
+
+/* Mensagens */
+.evolution-message {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(45, 74, 34, 0.95);
+  border: 2px solid #7bed9f;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #7bed9f;
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 20;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.evolution-message.start {
+  animation: messageSlideUp 0.5s ease-out;
+}
+
+.evolution-message.complete {
+  animation: messageSlideUp 0.5s ease-out,
+    messagePulse 1s ease-in-out infinite 1s;
+}
+
+/* Partículas de luz */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ffd700;
+}
+
+.particle.p1 {
+  left: 30%;
+  top: 20%;
+  animation: sparkle 1.5s ease-in-out infinite 0s;
+}
+.particle.p2 {
+  left: 70%;
+  top: 30%;
+  animation: sparkle 1.5s ease-in-out infinite 0.2s;
+}
+.particle.p3 {
+  left: 40%;
+  top: 60%;
+  animation: sparkle 1.5s ease-in-out infinite 0.4s;
+}
+.particle.p4 {
+  left: 80%;
+  top: 50%;
+  animation: sparkle 1.5s ease-in-out infinite 0.6s;
+}
+.particle.p5 {
+  left: 20%;
+  top: 70%;
+  animation: sparkle 1.5s ease-in-out infinite 0.8s;
+}
+.particle.p6 {
+  left: 60%;
+  top: 80%;
+  animation: sparkle 1.5s ease-in-out infinite 1s;
+}
+.particle.p7 {
+  left: 50%;
+  top: 15%;
+  animation: sparkle 1.5s ease-in-out infinite 1.2s;
+}
+.particle.p8 {
+  left: 85%;
+  top: 70%;
+  animation: sparkle 1.5s ease-in-out infinite 1.4s;
+}
+
+/* ===========================================
+   ANIMAÇÕES
+   =========================================== */
+@keyframes bgPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes whiteFlash {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes expandCircle {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(-2px) translateY(-2px);
+  }
+  50% {
+    transform: translateX(2px) translateY(2px);
+  }
+  75% {
+    transform: translateX(-2px) translateY(2px);
+  }
+}
+
+@keyframes evolutionGlow {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 5px #7bed9f);
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 15px #7bed9f);
+  }
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 1;
+  }
+}
+
+@keyframes appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes celebrateBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes messageSlideUp {
+  0% {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes messagePulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    transform: scale(0) translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5) translateY(-20px);
+    opacity: 1;
+  }
+}
+
+.pet-sprite .pokemon-image {
+  width: 110px;
+  height: 110px;
+  image-rendering: pixelated;
+  filter: brightness(0.7) sepia(1) hue-rotate(60deg) contrast(1.1);
+  transition: all 0.3s ease;
+  /* opacity: 0.8;
+  animation: pikachuBounce 2s ease-in-out infinite; Animação própria */
+}
+
+/* Garante que NÃO herde animações da evolução */
+.pet-sprite .pokemon-image {
+  animation-name: pikachuBounce !important;
+}
+
+/* ===========================================
+   ANIMAÇÃO DE EVOLUÇÃO - ESCOPO ISOLADO
+   =========================================== */
+.evolution-animation-container .evolution-sprite-animated {
+  width: 100px;
+  height: 100px;
+  image-rendering: pixelated;
+  position: relative;
+  z-index: 10;
+}
+
+.evolution-animation-container .evolution-sprite-animated.stage-starting {
+  animation: evolutionBounce 0.5s ease-in-out infinite;
+}
+
+.evolution-animation-container .evolution-sprite-animated.stage-flashing {
+  animation: evolutionShake 0.1s ease-in-out infinite,
+    evolutionGlow 0.3s ease-in-out infinite;
+}
+
+.evolution-animation-container .evolution-sprite-animated.stage-transforming {
+  animation: evolutionExplode 0.5s ease-out;
+  transform: scale(2);
+}
+
+.evolution-animation-container .evolution-sprite-animated.stage-complete {
+  animation: evolutionAppear 1s ease-out,
+    evolutionCelebrateBounce 0.8s ease-in-out 1s 3;
+}
+
+/* Animações específicas da evolução (não conflitam com o pet) */
+@keyframes evolutionBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes evolutionShake {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(-2px) translateY(-2px);
+  }
+  50% {
+    transform: translateX(2px) translateY(2px);
+  }
+  75% {
+    transform: translateX(-2px) translateY(2px);
+  }
+}
+
+@keyframes evolutionGlow {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 5px #7bed9f);
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 15px #7bed9f);
+  }
+}
+
+@keyframes evolutionExplode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 1;
+  }
+}
+
+@keyframes evolutionAppear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes evolutionCelebrateBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }

@@ -6,12 +6,16 @@ function PetScreen({
   petHunger,
   petHappiness,
   petEnergy,
+  petAge,
+  petHealth,
   showEmote,
   currentEmote,
 }) {
   return (
     <>
-      <div className="pet-name">{petName}</div>
+      <div className="pet-name">
+        {petName} • {petAge}D
+      </div>
 
       <div className="pet-sprite">
         <img src={petSprite} alt={petName} className="pokemon-image" />
@@ -36,8 +40,8 @@ function PetScreen({
             <div
               className="bar-fill"
               style={{
-                width: `${petHunger}%`,
-                backgroundColor: petHunger > 50 ? '#7bed9f' : '#ff6b6b',
+                width: `${petHealth}%`,
+                backgroundColor: petHealth > 50 ? '#7bed9f' : '#ff6b6b',
               }}
             />
           </div>
