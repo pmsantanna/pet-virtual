@@ -7,6 +7,7 @@ import GameOverScreen from './components/GameOverScreen';
 import ExpBar from './components/ExpBar';
 import EvolutionScreen from './components/EvolutionScreen';
 import EvolutionAnimation from './components/EvolutionAnimation';
+import Inventory from './components/Inventory';
 
 function App() {
   // Tela de seleção
@@ -14,6 +15,13 @@ function App() {
   const [selectedPokemon, setSelectedPokemon] = useState(0);
   const [showGameOver, setShowGameOver] = useState(false);
   const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
+
+  const [inventory, setInventory] = useState([
+    { id: 1, icon: '🍎', name: 'BERRY', quantity: 5 },
+    { id: 2, icon: '💊', name: 'POTION', quantity: 3 },
+    { id: 3, icon: '🍬', name: 'CANDY', quantity: 2 },
+    { id: 4, icon: '💉', name: 'VITAMIN', quantity: 1 },
+  ]);
 
   // Lista de Pokémon disponíveis
   const availablePokemon = [
@@ -51,6 +59,7 @@ function App() {
   const [isBattling, setIsBattling] = useState(false);
   const [isEvolving, setIsEvolving] = useState(false);
   const [canEvolve, setCanEvolve] = useState(false);
+  const [selectedInventorySlot, setSelectedInventorySlot] = useState(0);
 
   const [currentScreen, setCurrentScreen] = useState('pet');
   const [selectedAction, setSelectedAction] = useState(0);
@@ -64,6 +73,7 @@ function App() {
       { name: 'PLAY', icon: '⚡', desc: 'BATTLE' },
       { name: 'SLEEP', icon: '💤', desc: 'REST' },
       { name: 'MEDICINE', icon: '💊', desc: 'POTION' },
+      { name: 'BAG', icon: '🎒', desc: 'ITEMS' },
     ];
 
     if (canEvolve) {
@@ -213,12 +223,14 @@ function App() {
         setPetHealth(Math.min(100, petHealth + 5));
         showTemporaryMessage('PIKA PIKA!');
         showEmoteReaction('happy');
+        setCurrentScreen('pet'); // Volta para pet
         break;
 
       case 'PLAY':
         if (petEnergy < 20) {
           showTemporaryMessage('PIKA... CHU...', 2500);
           showEmoteReaction('tired', 3000);
+          setCurrentScreen('pet'); // Volta para pet
           break;
         }
 
@@ -262,6 +274,7 @@ function App() {
           }
 
           setIsBattling(false);
+          setCurrentScreen('pet'); // Volta para pet após batalha
         }, 2500);
         break;
 
@@ -270,6 +283,7 @@ function App() {
         setPetHealth(Math.min(100, petHealth + 10));
         showTemporaryMessage('ZZZ... PIKA...', 4000);
         showEmoteReaction('sleeping', 4500);
+        setCurrentScreen('pet'); // Volta para pet
         break;
 
       case 'MEDICINE':
@@ -277,6 +291,11 @@ function App() {
         setPetHappiness(Math.max(0, petHappiness - 10));
         showTemporaryMessage('PIKA! CHU!', 2000);
         showEmoteReaction('sick');
+        setCurrentScreen('pet'); // Volta para pet
+        break;
+
+      case 'BAG':
+        setCurrentScreen('inventory'); // Muda para inventário
         break;
 
       case 'EVOLVE':
@@ -285,8 +304,11 @@ function App() {
         }
         break;
     }
+  };
 
+  const handleBackFromInventory = () => {
     setCurrentScreen('pet');
+    setSelectedInventorySlot(0);
   };
 
   const confirmEvolution = () => {
@@ -354,8 +376,39 @@ function App() {
     setGameStarted(true);
   };
 
+  const addItemToInventory = (itemIcon, itemName, quantity = 1) => {
+    setInventory((prevInventory) => {
+      const existingItem = prevInventory.find((item) => item.name === itemName);
+
+      if (existingItem) {
+        // Se já existe, aumenta a quantidade
+        return prevInventory.map((item) =>
+          item.name === itemName
+            ? { ...item, quantity: item.quantity + quantity }
+            : item,
+        );
+      } else {
+        // Se não existe, adiciona novo item
+        return [
+          ...prevInventory,
+          {
+            id: Date.now(),
+            icon: itemIcon,
+            name: itemName,
+            quantity: quantity,
+          },
+        ];
+      }
+    });
+  };
+
   const buttonLeft = () => {
-    if (currentScreen === 'menu') {
+    if (currentScreen === 'inventory') {
+      setSelectedInventorySlot((prev) => {
+        const newSlot = prev - 1;
+        return newSlot < 0 ? 14 : newSlot; // 15 slots (0-14), volta pro último
+      });
+    } else if (currentScreen === 'menu') {
       setSelectedAction((selectedAction - 1 + actions.length) % actions.length);
     } else {
       showTemporaryMessage(`HP:${petHealth} EN:${petEnergy}`, 2500);
@@ -363,7 +416,9 @@ function App() {
   };
 
   const buttonCenter = () => {
-    if (currentScreen === 'pet') {
+    if (currentScreen === 'inventory') {
+      handleInventoryAction(selectedInventorySlot);
+    } else if (currentScreen === 'pet') {
       setCurrentScreen('menu');
     } else {
       executeAction();
@@ -371,10 +426,93 @@ function App() {
   };
 
   const buttonRight = () => {
-    if (currentScreen === 'menu') {
+    if (currentScreen === 'inventory') {
+      setSelectedInventorySlot((prev) => {
+        const newSlot = prev + 1;
+        return newSlot > 14 ? 0 : newSlot; // 15 slots (0-14), volta pro primeiro
+      });
+    } else if (currentScreen === 'menu') {
       setSelectedAction((selectedAction + 1) % actions.length);
     } else {
       showTemporaryMessage('TCHAU!', 1500);
+    }
+  };
+
+  const useItem = (item) => {
+    if (!item) return;
+
+    // Define os efeitos de cada item
+    const itemEffects = {
+      BERRY: () => {
+        setPetHunger(Math.min(100, petHunger + 30));
+        setPetHealth(Math.min(100, petHealth + 5));
+        showTemporaryMessage('DELICIOUS!', 2000);
+        showEmoteReaction('happy', 2500);
+      },
+      POTION: () => {
+        setPetHealth(Math.min(100, petHealth + 50));
+        setPetHappiness(Math.max(0, petHappiness - 5));
+        showTemporaryMessage('HEAL +50HP!', 2000);
+        showEmoteReaction('sick', 2500);
+      },
+      CANDY: () => {
+        setPetHappiness(Math.min(100, petHappiness + 40));
+        setPetEnergy(Math.min(100, petEnergy + 20));
+        showTemporaryMessage('SO SWEET!', 2000);
+        showEmoteReaction('excited', 2500);
+      },
+      VITAMIN: () => {
+        setPetHealth(Math.min(100, petHealth + 30));
+        setPetEnergy(Math.min(100, petEnergy + 30));
+        showTemporaryMessage('POWER UP!', 2000);
+        showEmoteReaction('happy', 2500);
+      },
+    };
+
+    // Executa o efeito do item
+    const effect = itemEffects[item.name];
+    if (effect) {
+      effect();
+
+      // Remove 1 unidade do item do inventário
+      setInventory((prevInventory) => {
+        return prevInventory
+          .map((invItem) => {
+            if (invItem.id === item.id) {
+              const newQuantity = invItem.quantity - 1;
+              return newQuantity > 0
+                ? { ...invItem, quantity: newQuantity }
+                : null;
+            }
+            return invItem;
+          })
+          .filter((invItem) => invItem !== null); // Remove itens com quantidade 0
+      });
+    } else {
+      // Item sem efeito definido
+      showTemporaryMessage(`USADO: ${item.name}`, 2000);
+    }
+
+    // Volta para a tela do pet após usar
+    setTimeout(() => {
+      setCurrentScreen('pet');
+      setSelectedInventorySlot(0);
+    }, 500);
+  };
+
+  const handleInventoryAction = (slotIndex) => {
+    if (slotIndex === 0) {
+      // Slot 0 = BACK
+      setCurrentScreen('pet');
+      setSelectedInventorySlot(0);
+    } else {
+      // Slots 1-14 = Itens
+      const itemIndex = slotIndex - 1;
+      const item = inventory[itemIndex];
+
+      if (item) {
+        useItem(item);
+      }
     }
   };
 
@@ -410,6 +548,12 @@ function App() {
                 onPrev={selectPrevPokemon}
                 onNext={selectNextPokemon}
                 onConfirm={confirmPokemon}
+              />
+            ) : currentScreen === 'inventory' ? (
+              <Inventory
+                items={inventory}
+                onBack={handleBackFromInventory}
+                selectedSlot={selectedInventorySlot}
               />
             ) : currentScreen === 'pet' ? (
               <PetScreen

@@ -1336,3 +1336,152 @@ body {
     transform: translateY(-15px);
   }
 }
+
+/* ===========================================
+   INVENTÁRIO
+   =========================================== */
+.inventory-header {
+  text-align: center;
+  font-size: 8px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  padding: 2px 0;
+  background: rgba(45, 74, 34, 0.8);
+  border-radius: 3px;
+}
+
+.inventory-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  padding: 4px;
+  background: rgba(30, 58, 26, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgba(123, 237, 159, 0.3);
+}
+
+.inventory-slot {
+  background: rgba(45, 74, 34, 0.9);
+  border: 1px solid #7bed9f;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 20px;
+  transition: all 0.2s ease;
+}
+
+.inventory-slot:hover {
+  background: rgba(55, 84, 44, 1);
+  border-color: #5dd48f;
+  transform: scale(1.05);
+}
+
+.item-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.item-quantity {
+  font-size: 5px;
+  position: absolute;
+  bottom: 1px;
+  right: 2px;
+  background: rgba(30, 58, 26, 0.9);
+  padding: 0 2px;
+  border-radius: 2px;
+  min-width: 8px;
+  text-align: center;
+}
+
+.empty-slot {
+  font-size: 8px;
+  opacity: 0.3;
+}
+
+.inventory-footer {
+  text-align: center;
+  font-size: 6px;
+  padding: 3px 0;
+  background: rgba(45, 74, 34, 0.8);
+  border-radius: 3px;
+  margin-top: 4px;
+}
+
+/* Botão BACK no inventário */
+.inventory-slot.back-button {
+  background: rgba(123, 237, 159, 0.2);
+  border: 2px solid #7bed9f;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inventory-slot.back-button:hover {
+  background: rgba(123, 237, 159, 0.4);
+  border-color: #5dd48f;
+  transform: scale(1.1);
+}
+
+.inventory-slot.back-button:active {
+  transform: scale(0.95);
+  background: rgba(123, 237, 159, 0.5);
+}
+
+.back-text {
+  font-size: 4px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.inventory-slot.selected {
+  background: rgba(123, 237, 159, 0.4);
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.inventory-slot.back-button.selected {
+  background: rgba(123, 237, 159, 0.5);
+  border: 2px solid #ffd700;
+}
+
+/* Animação de seleção */
+.inventory-slot.selected {
+  animation: inventorySelect 0.8s ease-in-out infinite;
+}
+
+@keyframes inventorySelect {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 1);
+  }
+}
+
+/* Animação quando item é usado */
+.inventory-slot.using {
+  animation: itemUsed 0.5s ease-out;
+}
+
+@keyframes itemUsed {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
