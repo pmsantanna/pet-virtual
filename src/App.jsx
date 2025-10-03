@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import PokemonSelection from './components/PokemonSelection';
 import PetScreen from './components/PetScreen';
@@ -8,6 +8,8 @@ import ExpBar from './components/ExpBar';
 import EvolutionScreen from './components/EvolutionScreen';
 import EvolutionAnimation from './components/EvolutionAnimation';
 import Inventory from './components/Inventory';
+import MiniGame from './components/Minigame';
+import MiniGameSelection from './components/MiniGameSelection';
 
 function App() {
   // Tela de seleção
@@ -67,6 +69,12 @@ function App() {
   const [showEmote, setShowEmote] = useState(false);
   const [currentEmote, setCurrentEmote] = useState('happy');
 
+  const [isPlayingMiniGame, setIsPlayingMiniGame] = useState(false);
+  const [showMiniGameSelection, setShowMiniGameSelection] = useState(false);
+  const [selectedMiniGame, setSelectedMiniGame] = useState(0);
+  const [currentMiniGame, setCurrentMiniGame] = useState(null);
+  const miniGameRef = useRef(null);
+
   const getActions = () => {
     const baseActions = [
       { name: 'FEED', icon: '🍎', desc: 'BERRIES' },
@@ -74,6 +82,7 @@ function App() {
       { name: 'SLEEP', icon: '💤', desc: 'REST' },
       { name: 'MEDICINE', icon: '💊', desc: 'POTION' },
       { name: 'BAG', icon: '🎒', desc: 'ITEMS' },
+      { name: 'GAMES', icon: '🎮', desc: 'MINI GAMES' },
     ];
 
     if (canEvolve) {
@@ -95,6 +104,48 @@ function App() {
 
     return `${baseUrl}/${petId}.png`;
   };
+
+  const startSelectedMiniGame = () => {
+    const game = availableMiniGames[selectedMiniGame];
+
+    console.log('Iniciando minigame:', game); // Debug
+
+    if (game.id === 'coming-soon-1' || game.id === 'coming-soon-2') {
+      showTemporaryMessage('COMING SOON!', 2000);
+      setCurrentScreen('pet'); // Volta para pet
+      setShowMiniGameSelection(false);
+      return;
+    }
+
+    if (game.id === 'bush-search') {
+      setCurrentMiniGame(game.id);
+      setShowMiniGameSelection(false);
+      setIsPlayingMiniGame(true);
+      setCurrentScreen('minigame');
+    }
+  };
+
+  // Lista de minigames disponíveis
+  const availableMiniGames = [
+    {
+      id: 'bush-search',
+      name: 'BUSH SEARCH',
+      icon: '🌳',
+      desc: 'FIND HIDDEN ITEMS',
+    },
+    {
+      id: 'coming-soon-1',
+      name: 'COMING SOON',
+      icon: '❓',
+      desc: 'NEW GAME',
+    },
+    {
+      id: 'coming-soon-2',
+      name: 'COMING SOON',
+      icon: '❓',
+      desc: 'NEW GAME',
+    },
+  ];
 
   const showTemporaryMessage = (message, duration = 3000) => {
     setPetMessage(message);
@@ -218,6 +269,11 @@ function App() {
     const action = actions[selectedAction].name;
 
     switch (action) {
+      case 'GAMES':
+        setShowMiniGameSelection(true);
+        setCurrentScreen('minigame-selection');
+        break;
+
       case 'FEED':
         setPetHunger(Math.min(100, petHunger + 30));
         setPetHealth(Math.min(100, petHealth + 5));
@@ -304,6 +360,18 @@ function App() {
         }
         break;
     }
+  };
+
+  const handleMiniGameComplete = () => {
+    setIsPlayingMiniGame(false);
+    setCurrentMiniGame(null);
+    setCurrentScreen('pet');
+  };
+
+  const handleMiniGameReward = (icon, name, quantity) => {
+    addItemToInventory(icon, name, quantity);
+    showTemporaryMessage(`GOT ${quantity}x ${name}!`, 3000);
+    showEmoteReaction('excited', 3000);
   };
 
   const handleBackFromInventory = () => {
@@ -403,10 +471,17 @@ function App() {
   };
 
   const buttonLeft = () => {
-    if (currentScreen === 'inventory') {
+    if (currentScreen === 'minigame' && miniGameRef.current) {
+      miniGameRef.current.moveBushLeft();
+    } else if (currentScreen === 'minigame-selection') {
+      // Na seleção, left = voltar
+      setShowMiniGameSelection(false);
+      setCurrentScreen('menu');
+      setSelectedMiniGame(0);
+    } else if (currentScreen === 'inventory') {
       setSelectedInventorySlot((prev) => {
         const newSlot = prev - 1;
-        return newSlot < 0 ? 14 : newSlot; // 15 slots (0-14), volta pro último
+        return newSlot < 0 ? 14 : newSlot;
       });
     } else if (currentScreen === 'menu') {
       setSelectedAction((selectedAction - 1 + actions.length) % actions.length);
@@ -416,7 +491,11 @@ function App() {
   };
 
   const buttonCenter = () => {
-    if (currentScreen === 'inventory') {
+    if (currentScreen === 'minigame' && miniGameRef.current) {
+      miniGameRef.current.handleBushSelect();
+    } else if (currentScreen === 'minigame-selection') {
+      startSelectedMiniGame(); // Chama a função
+    } else if (currentScreen === 'inventory') {
       handleInventoryAction(selectedInventorySlot);
     } else if (currentScreen === 'pet') {
       setCurrentScreen('menu');
@@ -426,10 +505,18 @@ function App() {
   };
 
   const buttonRight = () => {
-    if (currentScreen === 'inventory') {
+    if (currentScreen === 'minigame' && miniGameRef.current) {
+      miniGameRef.current.moveBushRight();
+    } else if (currentScreen === 'minigame-selection') {
+      // Down - incrementa
+      setSelectedMiniGame((prev) => {
+        const newGame = prev + 1;
+        return newGame >= availableMiniGames.length ? 0 : newGame;
+      });
+    } else if (currentScreen === 'inventory') {
       setSelectedInventorySlot((prev) => {
         const newSlot = prev + 1;
-        return newSlot > 14 ? 0 : newSlot; // 15 slots (0-14), volta pro primeiro
+        return newSlot > 14 ? 0 : newSlot;
       });
     } else if (currentScreen === 'menu') {
       setSelectedAction((selectedAction + 1) % actions.length);
@@ -554,6 +641,17 @@ function App() {
                 items={inventory}
                 onBack={handleBackFromInventory}
                 selectedSlot={selectedInventorySlot}
+              />
+            ) : currentScreen === 'minigame-selection' ? (
+              <MiniGameSelection
+                selectedGame={selectedMiniGame}
+                games={availableMiniGames}
+              />
+            ) : currentScreen === 'minigame' ? (
+              <MiniGame
+                ref={miniGameRef}
+                onComplete={handleMiniGameComplete}
+                onReward={handleMiniGameReward}
               />
             ) : currentScreen === 'pet' ? (
               <PetScreen
